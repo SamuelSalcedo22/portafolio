@@ -1,26 +1,161 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink: #0a0a0a;
+  --color-coal: #151312;
+  --color-cream: #f6e6d4;
+  --color-accent: #ff4321;
+  --color-pop-yellow: #ffd23f;
+  --color-pop-blue: #2f6bff;
+  --color-pop-pink: #ff7ac3;
+  --font-display: var(--font-anton), Impact, "Arial Narrow", sans-serif;
+  --font-script: var(--font-script), cursive;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: #0a0a0a;
+}
+html:not(.lenis) {
+  scroll-behavior: smooth;
+}
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #0a0a0a;
+  color: #f6e6d4;
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: #ff4321;
+  color: #0a0a0a;
+}
+
+section[id] {
+  scroll-margin-top: 4.5rem;
+}
+
+/* Rejilla fina de fondo, como en la referencia */
+.grid-lines {
+  background-image:
+    linear-gradient(to right, rgb(246 230 212 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(246 230 212 / 0.06) 1px, transparent 1px);
+  background-size: 25vw 50vh;
+}
+
+/* Grano de película sobre toda la página */
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 0.9s steps(6) infinite;
+}
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-4%, 3%); }
+  40% { transform: translate(3%, -5%); }
+  60% { transform: translate(-2%, 4%); }
+  80% { transform: translate(5%, 2%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Texto con relleno pop en movimiento */
+.pop-fill {
+  background-image: repeating-linear-gradient(
+    100deg,
+    #ff4321 0 9%,
+    #ffd23f 9% 16%,
+    #2f6bff 16% 27%,
+    #ff7ac3 27% 34%,
+    #ff4321 34% 45%
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: pop-slide 9s linear infinite;
+}
+@keyframes pop-slide {
+  to { background-position: -300% 0; }
+}
+
+.outline-text {
+  -webkit-text-stroke: 1.5px #f6e6d4;
+  color: transparent;
+}
+
+.display {
+  font-family: var(--font-anton), Impact, sans-serif;
+  text-transform: uppercase;
+  line-height: 0.88;
+  letter-spacing: -0.01em;
+}
+
+.meta {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Marquesina */
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 26s linear infinite;
+}
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+
+/* Ola del pie */
+.wave-a { animation: wave 9s ease-in-out infinite alternate; }
+.wave-b { animation: wave 13s ease-in-out infinite alternate-reverse; }
+@keyframes wave {
+  from { transform: translateX(0); }
+  to { transform: translateX(-12%); }
+}
+
+/* Ticket */
+.ticket {
+  --notch: 10px;
+  background: #f6e6d4;
+  color: #0a0a0a;
+  -webkit-mask:
+    radial-gradient(circle var(--notch) at 0 50%, transparent 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle var(--notch) at 100% 50%, transparent 98%, #000) right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle var(--notch) at 0 50%, transparent 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle var(--notch) at 100% 50%, transparent 98%, #000) right / 51% 100% no-repeat;
+}
+
+.field {
+  width: 100%;
+  background: transparent;
+  border-bottom: 1px solid rgb(246 230 212 / 0.3);
+  padding: 0.9rem 0;
+  color: #f6e6d4;
+  outline: none;
+  transition: border-color 0.25s;
+}
+.field::placeholder { color: rgb(246 230 212 / 0.35); }
+.field:focus { border-color: #ff4321; }
+
+:focus-visible {
+  outline: 2px solid #ff4321;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain, .pop-fill, .marquee, .wave-a, .wave-b { animation: none; }
 }
