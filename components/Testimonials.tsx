@@ -70,6 +70,8 @@ export default function Testimonials() {
   // Los reales van primero; los de ejemplo solo rellenan hasta llegar a tres.
   const list = remote.length >= 3 ? remote : [...remote, ...placeholders.slice(0, 3 - remote.length)];
   const count = list.length;
+  // Cambia cuando cambia el contenido, para volver a armar la pila con las tarjetas nuevas.
+  const signature = list.map((t) => `${t.name}:${t.text.length}`).join("|");
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -141,7 +143,7 @@ export default function Testimonials() {
       delete el.dataset.stacked;
       ctx.revert();
     };
-  }, [count]);
+  }, [signature]);
 
   return (
     <section id="testimonios" ref={root} className="group/t grid-lines relative overflow-hidden py-24 md:py-36">
