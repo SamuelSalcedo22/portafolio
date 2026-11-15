@@ -11,7 +11,7 @@ Portafolio personal hecho con **Next.js (App Router) + TypeScript + Tailwind CSS
 5. Testimonios
 6. Experiencia académica y laboral
 7. Contactos (formulario con validación)
-8. Sección adicional: Certificados
+8. Sección adicional: Habilidades y aptitudes
 9. Pie de página
 
 ## Cómo editar el contenido

@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { about, interests, profile } from "@/data/portfolio";
+import { about, interests } from "@/data/portfolio";
 import Poster from "./Poster";
 
 export default function About() {
@@ -92,12 +92,7 @@ export default function About() {
         <div>
           <p className="meta text-accent">( 01 ) — Acerca de mí</p>
           <div data-portrait className="mt-8 w-48 border-4 border-cream bg-cream md:w-64">
-            {profile.photo ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={profile.photo} alt={`Retrato de ${profile.firstName}`} className="aspect-[4/5] w-full object-cover" />
-            ) : (
-              <Poster kind="code" colors={["#2f6bff", "#f6e6d4", "#ff4321"]} label="Ilustración: código" className="aspect-[4/5] w-full" />
-            )}
+            <Poster kind="code" colors={["#2f6bff", "#f6e6d4", "#ff4321"]} label="Ilustración: código" className="aspect-[4/5] w-full" />
           </div>
         </div>
 
@@ -111,9 +106,9 @@ export default function About() {
             ))}
           </p>
 
-          <dl data-facts className="mt-14 grid gap-px bg-cream/15 sm:grid-cols-2 xl:grid-cols-4">
+          <dl data-facts className="mt-14 grid gap-px bg-cream/15 sm:grid-cols-2 xl:grid-cols-[1fr_1fr_2fr]">
             {about.facts.map((f) => (
-              <div key={f.label} data-fact className="bg-ink p-5">
+              <div key={f.label} data-fact className="bg-ink p-5 last:sm:col-span-2 last:xl:col-span-1">
                 <dt className="meta text-accent">{f.label}</dt>
                 <dd className="mt-2 text-sm text-cream">{f.value}</dd>
               </div>

@@ -72,7 +72,7 @@ export default function Contact() {
   const links = [
     { label: "Correo", value: profile.email, href: `mailto:${profile.email}` },
     { label: "GitHub", value: profile.github.replace("https://", ""), href: profile.github },
-    { label: "LinkedIn", value: profile.linkedin.replace("https://www.", ""), href: profile.linkedin },
+    { label: "LinkedIn", value: "in/samuel-andres-salcedo-martinez", href: profile.linkedin },
     ...(profile.whatsapp ? [{ label: "WhatsApp", value: "Escríbeme", href: profile.whatsapp }] : []),
   ];
 

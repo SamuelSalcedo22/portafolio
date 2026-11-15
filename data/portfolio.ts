@@ -7,17 +7,28 @@
  * ─────────────────────────────────────────────────────────────
  */
 
-export type PosterKind = "vinyl" | "pixel" | "code" | "anime" | "initials" | "number";
+export type PosterKind =
+  | "vinyl"
+  | "pixel"
+  | "code"
+  | "ai"
+  | "rocket"
+  | "gear"
+  | "initials"
+  | "number"
+  | "blank";
 
 export type Project = {
   title: string;
   description: string;
   tags: string[];
   github: string;
-  demo: string;
+  /** Enlace para ver o descargar el proyecto (opcional). */
+  demo?: string;
+  demoLabel?: string;
   year: string;
-  /** Ruta de una captura en /public/images (opcional). Si falta, se genera una portada. */
-  image?: string;
+  /** Logo del proyecto en /public/images/logos. */
+  logo: string;
   colors: [string, string, string];
 };
 
@@ -39,11 +50,10 @@ export type ExperienceItem = {
   link?: string;
 };
 
-export type Certificate = {
-  title: string;
-  issuer: string;
-  year: string;
-  link?: string;
+export type Skill = {
+  name: string;
+  detail: string;
+  type: "Habilidad" | "Aptitud";
 };
 
 export type Interest = {
@@ -70,12 +80,11 @@ export const profile = {
     "Construyo aplicaciones web de punta a punta: interfaces con carácter y APIs que aguantan.",
   location: "Pasto, Nariño · Colombia",
   university: "Universidad Cooperativa de Colombia",
-  semester: "PENDIENTE: tu semestre", // PENDIENTE
   cv: "/cv.pdf", // Reemplaza public/cv.pdf por tu hoja de vida real
-  photo: undefined as string | undefined, // ej. "/images/foto.jpg"
-  email: "tu-correo@ejemplo.com", // PENDIENTE
+  photo: "/images/avatar.jpg" as string | undefined,
+  email: "samuelandressalcedomartinez@gmail.com",
   github: "https://github.com/SamuelSalcedo22",
-  linkedin: "https://www.linkedin.com/", // PENDIENTE: tu perfil
+  linkedin: "https://www.linkedin.com/in/samuel-andres-salcedo-martinez-0803742ba",
   whatsapp: "", // opcional, ej. "https://wa.me/57XXXXXXXXXX"
   /** Opcional: endpoint de Formspree (https://formspree.io/f/xxxx). Si está vacío, el formulario abre tu app de correo. */
   formEndpoint: "",
@@ -83,22 +92,25 @@ export const profile = {
 
 export const about = {
   paragraph:
-    "Soy Samuel, estudiante de ingeniería en Pasto y desarrollador full stack. Me gusta tomar una idea, diseñarle una interfaz con personalidad y llevarla hasta producción con una API sólida detrás. Programo con música puesta, aprendo jugando y casi siempre hay un anime esperándome al terminar el commit.",
+    "Soy Samuel, estudiante de Ingeniería de Software en Pasto y desarrollador full stack. Me gusta tomar una idea, diseñarle una interfaz con personalidad y llevarla hasta producción con una API sólida detrás. Me mueven la inteligencia artificial, la automatización y convertir buenas ideas en emprendimientos reales.",
   facts: [
     { label: "Ubicación", value: "Pasto, Nariño" },
     { label: "Estudio en", value: "U. Cooperativa de Colombia" },
-    { label: "Semestre", value: "Por confirmar" }, // PENDIENTE
-    { label: "Intereses", value: "Música · Videojuegos · Anime · Código" },
+    {
+      label: "Intereses",
+      value: "Inteligencia artificial · Desarrollo de software · Emprendimiento · Automatización",
+    },
   ],
   skills: [
     "Next.js",
     "React",
+    "React Native",
     "TypeScript",
     "Tailwind CSS",
     "NestJS",
     "Node.js",
     "PostgreSQL",
-    "TypeORM",
+    "Supabase",
     "Java",
     "Python",
     "Docker",
@@ -108,39 +120,39 @@ export const about = {
 
 export const interests: Interest[] = [
   {
-    kind: "vinyl",
-    title: "Música",
-    caption: "La banda sonora de cada sesión de código.",
+    kind: "ai",
+    title: "Inteligencia artificial",
+    caption: "Modelos que pronostican, ven y recomiendan.",
     colors: [ORANGE, INK, CREAM],
   },
   {
-    kind: "pixel",
-    title: "Videojuegos",
-    caption: "Donde aprendí a insistir hasta pasar el nivel.",
-    colors: [BLUE, YELLOW, INK],
-  },
-  {
-    kind: "anime",
-    title: "Anime",
-    caption: "Historias que me enseñaron a no rendirme.",
-    colors: [PINK, INK, YELLOW],
-  },
-  {
     kind: "code",
-    title: "Código",
+    title: "Programación",
     caption: "Mi forma favorita de construir cosas.",
     colors: [CREAM, INK, ORANGE],
   },
   {
-    kind: "vinyl",
-    title: "Playlists",
-    caption: "Una para depurar, otra para desplegar.",
+    kind: "rocket",
+    title: "Emprendimiento",
+    caption: "Ideas que se vuelven productos reales.",
+    colors: [BLUE, CREAM, YELLOW],
+  },
+  {
+    kind: "gear",
+    title: "Automatización",
+    caption: "De la mecatrónica al software.",
     colors: [YELLOW, INK, ORANGE],
   },
   {
     kind: "pixel",
-    title: "Retro",
-    caption: "8 bits, cero excusas.",
+    title: "Videojuegos",
+    caption: "También los construyo: mira Marble Overdrive.",
+    colors: [PINK, INK, YELLOW],
+  },
+  {
+    kind: "vinyl",
+    title: "Música",
+    caption: "La banda sonora de cada sesión de código.",
     colors: [MINT, INK, PINK],
   },
 ];
@@ -153,53 +165,32 @@ export const projects: Project[] = [
     tags: ["JavaScript", "Node.js", "IA", "Docker"],
     github: "https://github.com/SamuelSalcedo22/impulsopyme",
     demo: "https://impulsopyme.onrender.com",
-    image: "/images/impulsopyme.jpg",
+    demoLabel: "Demo en vivo",
     year: "2026",
+    logo: "/images/logos/impulsopyme.svg",
     colors: [ORANGE, INK, CREAM],
   },
   {
-    title: "Dakingo",
+    title: "Eco-Desafíos Urbanos",
     description:
-      "Tienda de panadería con catálogo, filtros por categoría y carrito, recreada a partir de un diseño de referencia.",
-    tags: ["Next.js", "TypeScript", "Tailwind CSS"],
-    github: "https://github.com/SamuelSalcedo22/dakingo-nextjs",
-    demo: "https://dakingo-nextjs.vercel.app",
-    image: "/images/dakingo.jpg",
+      "App móvil de micro-voluntariado urbano: misiones, evidencia fotográfica validada con visión por computador, puntos, ranking y mapa de actividades.",
+    tags: ["React Native", "Expo", "TypeScript", "Supabase", "Gemini"],
+    github: "https://github.com/SamuelSalcedo22/eco-desafios-urbanos",
+    demo: "https://github.com/SamuelSalcedo22/eco-desafios-urbanos/releases/latest",
+    demoLabel: "Descargar app",
     year: "2026",
-    colors: [YELLOW, INK, ORANGE],
+    logo: "/images/logos/eco-desafios.png",
+    colors: [MINT, INK, YELLOW],
   },
   {
-    title: "Aerial Checkout",
+    title: "Marble Overdrive",
     description:
-      "Flujo de selección de asientos y pago de una aerolínea, clonado al píxel con animaciones fluidas.",
-    tags: ["Next.js", "TypeScript", "Framer Motion"],
-    github: "https://github.com/SamuelSalcedo22/TallerCheckOut-",
-    demo: "https://taller-check-out.vercel.app",
-    image: "/images/aerial.jpg",
+      "Juego 3D local para dos jugadores: canicas luminosas que compiten en una pista compartida, con poderes, freno y una ciudad industrial de fondo. Proyecto en equipo.",
+    tags: ["Godot 4", "GDScript", "Shaders", "Trabajo en equipo"],
+    github: "https://github.com/danilolarap/MarbleOverdrive",
     year: "2026",
+    logo: "/images/logos/marble-overdrive.svg",
     colors: [BLUE, CREAM, YELLOW],
-  },
-  {
-    title: "Flex Dashboard",
-    description:
-      "Réplica fiel de un panel de analítica para e-commerce: métricas, gráficas de sesiones y conversión.",
-    tags: ["Next.js", "TypeScript", "CSS"],
-    github: "https://github.com/SamuelSalcedo22/Ejercicio-replica",
-    demo: "https://ejercicio-replica.vercel.app",
-    image: "/images/replica.jpg",
-    year: "2026",
-    colors: [PINK, INK, CREAM],
-  },
-  {
-    title: "Vision Glass Player",
-    description:
-      "Reproductor de video con estética de vidrio esmerilado al estilo visionOS: capas, desenfoque y transparencias.",
-    tags: ["HTML", "CSS"],
-    github: "https://github.com/SamuelSalcedo22/Glassmorphism",
-    demo: "https://glassmorphism-nine-chi.vercel.app",
-    image: "/images/glass.jpg",
-    year: "2026",
-    colors: [MINT, INK, BLUE],
   },
 ];
 
@@ -229,20 +220,20 @@ export const testimonials: Testimonial[] = [
 // De lo más reciente a lo más antiguo.
 export const academic: ExperienceItem[] = [
   {
-    title: "Ingeniería · pregrado", // PENDIENTE: nombre exacto del programa
+    title: "Ingeniería de Software",
     place: "Universidad Cooperativa de Colombia · Pasto",
-    start: "Inicio por confirmar", // PENDIENTE
+    start: "2024",
     end: "Actualidad",
     description:
       "Formación en desarrollo de software, bases de datos y diseño de interfaces, con proyectos orientados a los Objetivos de Desarrollo Sostenible.",
   },
   {
-    title: "Diseño de Interfaces de Software",
-    place: "Universidad Cooperativa de Colombia · curso",
-    start: "2026",
-    end: "2026",
+    title: "Tecnólogo en Diseño e Integración de Automatismos Mecatrónicos",
+    place: "SENA · Centro Lope · Pasto",
+    start: "2022",
+    end: "2024",
     description:
-      "Réplicas de interfaz al píxel, diseño responsive y publicación continua en Vercel con Next.js, TypeScript y Tailwind CSS.",
+      "Diseño, montaje e integración de sistemas automáticos: electrónica, control, programación y mecánica aplicadas a procesos industriales.",
   },
 ];
 
@@ -276,14 +267,20 @@ export const work: ExperienceItem[] = [
   },
 ];
 
-// PENDIENTE: certificados de ejemplo. Cámbialos por los tuyos.
-export const certificates: Certificate[] = [
-  { title: "Tu certificado 01", issuer: "Entidad", year: "2026" },
-  { title: "Tu certificado 02", issuer: "Entidad", year: "2026" },
-  { title: "Tu certificado 03", issuer: "Entidad", year: "2025" },
-  { title: "Tu certificado 04", issuer: "Entidad", year: "2025" },
-  { title: "Tu certificado 05", issuer: "Entidad", year: "2024" },
-  { title: "Tu certificado 06", issuer: "Entidad", year: "2024" },
+// Sección adicional: habilidades (técnicas) y aptitudes (personales).
+export const skills: Skill[] = [
+  { name: "Frontend", detail: "Next.js · React · Tailwind", type: "Habilidad" },
+  { name: "Backend", detail: "NestJS · Node.js · Java", type: "Habilidad" },
+  { name: "Apps móviles", detail: "React Native · Expo", type: "Habilidad" },
+  { name: "Bases de datos", detail: "PostgreSQL · Supabase", type: "Habilidad" },
+  { name: "IA aplicada", detail: "Pronósticos · Visión", type: "Habilidad" },
+  { name: "Automatización", detail: "Mecatrónica · Control", type: "Habilidad" },
+  { name: "Trabajo en equipo", detail: "Git · Revisión de código", type: "Aptitud" },
+  { name: "Resolver problemas", detail: "Analizar · Probar · Iterar", type: "Aptitud" },
+  { name: "Autodidacta", detail: "Aprendo rápido lo nuevo", type: "Aptitud" },
+  { name: "Emprendedor", detail: "De la idea al producto", type: "Aptitud" },
+  { name: "Creatividad", detail: "Interfaces con carácter", type: "Aptitud" },
+  { name: "Responsabilidad", detail: "Cumplo lo que entrego", type: "Aptitud" },
 ];
 
 export const navLinks = [
@@ -293,5 +290,5 @@ export const navLinks = [
   { id: "testimonios", label: "Testimonios" },
   { id: "experiencia", label: "Experiencia" },
   { id: "contacto", label: "Contacto" },
-  { id: "certificados", label: "Certificados" },
+  { id: "habilidades", label: "Habilidades" },
 ];

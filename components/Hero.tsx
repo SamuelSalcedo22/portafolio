@@ -146,12 +146,12 @@ export default function Hero() {
           <div data-avatar className="relative w-36 rotate-[5deg] border-4 border-cream bg-cream shadow-[10px_10px_0_#ff4321] md:w-52">
             {profile.photo ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={profile.photo} alt={`Foto de ${profile.firstName} ${profile.lastName}`} className="aspect-[4/5] w-full object-cover" />
+              <img src={profile.photo} alt={`Foto de ${profile.firstName} ${profile.lastName}`} className="aspect-[4/5] w-full object-cover object-top" />
             ) : (
               <Poster kind="initials" label={profile.initials} colors={["#ff4321", "#0a0a0a", "#ffd23f"]} className="aspect-[4/5] w-full" />
             )}
             <p className="meta px-2 py-1.5 text-ink">
-              {profile.firstName} · {profile.role}
+              {profile.firstName} {profile.lastName} · {profile.role}
             </p>
           </div>
         </div>

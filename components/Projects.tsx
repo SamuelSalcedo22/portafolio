@@ -69,30 +69,22 @@ export default function Projects() {
         className="mx-auto mt-12 grid max-w-[1600px] grid-cols-1 gap-x-6 gap-y-14 px-4 md:grid-cols-2 md:px-8 xl:grid-cols-3"
         style={{ perspective: "1400px" }}
       >
-        {projects.map((p, i) => (
+        {projects.map((p) => (
           <li key={p.title} data-project>
             <article data-tilt className="group flex h-full flex-col will-change-transform" style={{ transformStyle: "preserve-3d" }}>
               <div className="relative overflow-hidden border-2 border-ink">
-                {p.image ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={p.image}
-                    alt={`Captura de ${p.title}`}
-                    loading="lazy"
-                    className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                ) : (
-                  <Poster
-                    kind="number"
-                    label={String(i + 1).padStart(2, "0")}
-                    colors={p.colors}
-                    className="aspect-[4/3] w-full transition-transform duration-700 group-hover:scale-105"
-                  />
-                )}
+                <Poster kind="blank" colors={p.colors} label={`Portada de ${p.title}`} className="aspect-[4/3] w-full" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={p.logo}
+                  alt={`Logo de ${p.title}`}
+                  loading="lazy"
+                  className="absolute left-1/2 top-1/2 h-[46%] w-auto -translate-x-1/2 -translate-y-1/2 rounded-[22%] shadow-[8px_8px_0_#0a0a0a] transition-transform duration-500 group-hover:-translate-y-[58%] group-hover:rotate-[-6deg] group-hover:scale-110"
+                />
                 <span className="meta absolute left-3 top-3 bg-ink px-2 py-1 text-cream">{p.year}</span>
               </div>
 
-              <h3 className="display mt-5 text-4xl md:text-5xl">{p.title}</h3>
+              <h3 className="display mt-5 text-4xl leading-[1.02] md:text-5xl">{p.title}</h3>
               <p className="mt-3 flex-1 text-sm leading-relaxed text-ink/75">{p.description}</p>
 
               <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Tecnologías">
@@ -112,14 +104,16 @@ export default function Projects() {
                 >
                   GitHub ↗
                 </a>
-                <a
-                  href={p.demo}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="meta flex-1 border-2 border-accent bg-accent px-4 py-3 text-center font-bold transition-colors hover:border-ink hover:bg-ink hover:text-cream"
-                >
-                  Demo en vivo ↗
-                </a>
+                {p.demo && (
+                  <a
+                    href={p.demo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="meta flex-1 border-2 border-accent bg-accent px-4 py-3 text-center font-bold transition-colors hover:border-ink hover:bg-ink hover:text-cream"
+                  >
+                    {p.demoLabel ?? "Demo en vivo"} ↗
+                  </a>
+                )}
               </div>
             </article>
           </li>

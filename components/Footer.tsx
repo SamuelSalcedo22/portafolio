@@ -110,7 +110,6 @@ export default function Footer() {
           <p className="meta font-bold">
             © {year} {profile.firstName} {profile.lastName}
           </p>
-          <p className="meta">Hecho con Next.js + Tailwind CSS</p>
           <a
             href="#inicio"
             className="meta inline-flex items-center gap-2 bg-ink px-4 py-3 font-bold text-cream transition-transform hover:-translate-y-1"

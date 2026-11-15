@@ -5,11 +5,10 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { academic, work, type ExperienceItem } from "@/data/portfolio";
 
-function Timeline({ title, icon, items }: { title: string; icon: string; items: ExperienceItem[] }) {
+function Timeline({ title, items }: { title: string; items: ExperienceItem[] }) {
   return (
     <div data-timeline>
       <h3 className="display flex items-center gap-3 text-4xl text-cream md:text-5xl">
-        <span aria-hidden className="text-3xl">{icon}</span>
         {title}
       </h3>
       <div className="relative mt-8 pl-8">
@@ -22,7 +21,7 @@ function Timeline({ title, icon, items }: { title: string; icon: string; items: 
               <p className="meta text-accent">
                 {it.start} — {it.end}
               </p>
-              <h4 className="display mt-2 text-2xl text-cream md:text-3xl">{it.title}</h4>
+              <h4 className="display mt-2 text-2xl leading-[1.08] text-cream md:text-3xl">{it.title}</h4>
               <p className="meta mt-1 text-cream/60">{it.place}</p>
               <p className="mt-3 max-w-prose text-sm leading-relaxed text-cream/75">{it.description}</p>
               {it.link && (
@@ -92,8 +91,8 @@ export default function Experience() {
           Tra<span className="pop-fill">yec</span>toria
         </h2>
         <div className="mt-16 grid gap-16 lg:grid-cols-2 lg:gap-10">
-          <Timeline title="Académica" icon="🎓" items={academic} />
-          <Timeline title="Laboral" icon="💼" items={work} />
+          <Timeline title="Académica" items={academic} />
+          <Timeline title="Laboral" items={work} />
         </div>
       </div>
     </section>

@@ -112,7 +112,7 @@ section[id] {
 .marquee {
   display: flex;
   width: max-content;
-  animation: marquee 26s linear infinite;
+  animation: marquee 40s linear infinite;
 }
 @keyframes marquee {
   to { transform: translateX(-50%); }

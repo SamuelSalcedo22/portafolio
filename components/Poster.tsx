@@ -76,29 +76,38 @@ export default function Poster({ kind, colors, label, className }: Props) {
         </g>
       )}
 
-      {kind === "anime" && (
-        <g>
-          {Array.from({ length: 18 }).map((_, i) => (
-            <path
-              key={i}
-              d="M200 235 L196 -200 L204 -200 Z"
-              fill={fg}
-              opacity={i % 2 ? 0.9 : 0.5}
-              transform={`rotate(${i * 20} 200 235)`}
-            />
+      {kind === "ai" && (
+        <g stroke={fg} strokeWidth="5" fill={fg}>
+          {[[90,130],[90,235],[90,340]].flatMap(([x1,y1]) => [[200,180],[200,290]].map(([x2,y2]) => (
+            <line key={`a${y1}${y2}`} x1={x1} y1={y1} x2={x2} y2={y2} />
+          )))}
+          {[[200,180],[200,290]].flatMap(([x1,y1]) => [[310,130],[310,235],[310,340]].map(([x2,y2]) => (
+            <line key={`b${y1}${y2}`} x1={x1} y1={y1} x2={x2} y2={y2} />
+          )))}
+          {[[90,130],[90,235],[90,340],[310,130],[310,235],[310,340]].map(([x,y]) => (
+            <circle key={`${x}${y}`} cx={x} cy={y} r="22" stroke="none" />
           ))}
-          <circle cx="200" cy="235" r="96" fill={accent} />
-          <text
-            x="200"
-            y="262"
-            textAnchor="middle"
-            fontSize="78"
-            fontWeight="900"
-            fill={fg}
-            fontFamily="'Yu Gothic', 'Hiragino Sans', 'Noto Sans JP', sans-serif"
-          >
-            アニメ
-          </text>
+          <circle cx="200" cy="180" r="30" fill={accent} />
+          <circle cx="200" cy="290" r="30" fill={accent} />
+        </g>
+      )}
+
+      {kind === "rocket" && (
+        <g transform="rotate(35 200 235)">
+          <path d="M200 60 C255 120 262 230 250 320 L150 320 C138 230 145 120 200 60Z" fill={fg} />
+          <path d="M150 250 L95 345 L150 320Z M250 250 L305 345 L250 320Z" fill={fg} />
+          <circle cx="200" cy="185" r="30" fill={accent} />
+          <path d="M170 330 L200 420 L230 330Z" fill={accent} />
+        </g>
+      )}
+
+      {kind === "gear" && (
+        <g transform="translate(200 235)">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <rect key={i} x="-26" y="-158" width="52" height="70" rx="6" fill={fg} transform={`rotate(${i * 45})`} />
+          ))}
+          <circle r="112" fill={fg} />
+          <circle r="48" fill={accent} />
         </g>
       )}
 
