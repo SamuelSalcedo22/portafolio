@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { testimonials, type Testimonial } from "@/data/portfolio";
+import { testimonials as placeholders, type Testimonial } from "@/data/portfolio";
+import { fetchApproved, submitTestimonial } from "@/lib/testimonials";
 
 function initialsOf(name: string) {
   return name
@@ -14,7 +15,7 @@ function initialsOf(name: string) {
     .join("");
 }
 
-function Card({ t, i }: { t: Testimonial; i: number }) {
+function Card({ t, i, total }: { t: Testimonial; i: number; total: number }) {
   return (
     <figure className="flex h-full flex-col justify-between border-2 border-cream bg-coal p-6 md:p-10">
       <div className="flex items-start justify-between gap-4">
@@ -22,10 +23,10 @@ function Card({ t, i }: { t: Testimonial; i: number }) {
           “
         </span>
         <span className="meta text-cream/50">
-          {String(i + 1).padStart(2, "0")} / {String(testimonials.length).padStart(2, "0")}
+          {String(i + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
         </span>
       </div>
-      <blockquote className="display my-6 text-[clamp(1.5rem,3.4vw,3rem)] leading-[1.05] text-cream">
+      <blockquote className="display my-6 line-clamp-6 text-[clamp(1.3rem,3vw,2.6rem)] leading-[1.08] text-cream">
         {t.text}
       </blockquote>
       <figcaption className="flex items-center gap-4">
@@ -52,6 +53,42 @@ function Card({ t, i }: { t: Testimonial; i: number }) {
 /** Pila 3D: cada testimonio sale volando hacia arriba y el siguiente avanza al frente. */
 export default function Testimonials() {
   const root = useRef<HTMLElement>(null);
+  const [remote, setRemote] = useState<Testimonial[]>([]);
+  const [stars, setStars] = useState(5);
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  useEffect(() => {
+    let alive = true;
+    fetchApproved().then((rows) => {
+      if (alive && rows.length) setRemote(rows);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  // Los reales van primero; los de ejemplo solo rellenan hasta llegar a tres.
+  const list = remote.length >= 3 ? remote : [...remote, ...placeholders.slice(0, 3 - remote.length)];
+  const count = list.length;
+
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    if (data.get("sitio")) return; // trampa para bots
+    setStatus("sending");
+    const ok = await submitTestimonial({
+      name: String(data.get("t-nombre") ?? "").trim(),
+      role: String(data.get("t-cargo") ?? "").trim(),
+      message: String(data.get("t-opinion") ?? "").trim(),
+      stars,
+    });
+    setStatus(ok ? "sent" : "error");
+    if (ok) {
+      form.reset();
+      setStars(5);
+    }
+  }
 
   useEffect(() => {
     const el = root.current;
@@ -104,7 +141,7 @@ export default function Testimonials() {
       delete el.dataset.stacked;
       ctx.revert();
     };
-  }, []);
+  }, [count]);
 
   return (
     <section id="testimonios" ref={root} className="group/t grid-lines relative overflow-hidden py-24 md:py-36">
@@ -124,17 +161,77 @@ export default function Testimonials() {
           className="relative mx-auto mt-10 flex max-w-4xl flex-col gap-6 group-data-[stacked]/t:block group-data-[stacked]/t:h-[min(62vh,30rem)]"
           style={{ perspective: "1100px" }}
         >
-          {testimonials.map((t, i) => (
+          {list.map((t, i) => (
             <li
-              key={i}
+              key={`${t.name}-${i}`}
               data-tcard
               className="will-change-transform group-data-[stacked]/t:absolute group-data-[stacked]/t:inset-0"
               style={{ transformOrigin: "50% 100%" }}
             >
-              <Card t={t} i={i} />
+              <Card t={t} i={i} total={count} />
             </li>
           ))}
         </ul>
+      </div>
+
+      <div className="relative mx-auto mt-20 max-w-4xl px-4 md:px-8">
+        <div className="border-2 border-cream/25 bg-ink p-6 md:p-10">
+          <p className="meta text-accent">¿Trabajamos juntos?</p>
+          <h3 className="display mt-2 text-4xl text-cream md:text-6xl">Deja tu opinión</h3>
+          <p className="mt-3 max-w-prose text-sm text-cream/60">
+            Tu testimonio aparecerá en esta sección cuando Samuel lo apruebe.
+          </p>
+
+          <form onSubmit={onSubmit} className="mt-8 grid gap-6 md:grid-cols-2">
+            <div>
+              <label htmlFor="t-nombre" className="meta text-cream/60">Nombre</label>
+              <input id="t-nombre" name="t-nombre" type="text" required minLength={2} maxLength={60} autoComplete="name" placeholder="Tu nombre" className="field" />
+            </div>
+            <div>
+              <label htmlFor="t-cargo" className="meta text-cream/60">Cargo o relación</label>
+              <input id="t-cargo" name="t-cargo" type="text" required minLength={2} maxLength={80} placeholder="Cliente, profesor, compañero…" className="field" />
+            </div>
+            <div className="md:col-span-2">
+              <label htmlFor="t-opinion" className="meta text-cream/60">Tu opinión</label>
+              <textarea id="t-opinion" name="t-opinion" required minLength={10} maxLength={400} rows={3} placeholder="¿Cómo fue trabajar con Samuel?" className="field resize-none" />
+            </div>
+            <input type="text" name="sitio" tabIndex={-1} autoComplete="off" aria-hidden className="hidden" />
+
+            <fieldset className="flex items-center gap-3">
+              <legend className="meta float-left mr-3 text-cream/60">Calificación</legend>
+              <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <button
+                    key={n}
+                    type="button"
+                    onClick={() => setStars(n)}
+                    aria-label={`${n} de 5 estrellas`}
+                    aria-pressed={stars === n}
+                    className={`text-3xl leading-none transition-transform hover:scale-125 ${n <= stars ? "text-accent" : "text-cream/25"}`}
+                  >
+                    ★
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+
+            <div className="flex flex-wrap items-center gap-4 md:justify-end">
+              <button
+                type="submit"
+                disabled={status === "sending"}
+                className="meta group inline-flex items-center gap-3 bg-accent px-8 py-4 font-bold text-ink transition-transform hover:-translate-y-1 disabled:opacity-60"
+              >
+                {status === "sending" ? "Enviando…" : "Enviar testimonio"}
+                <span className="transition-transform group-hover:translate-x-1">→</span>
+              </button>
+            </div>
+
+            <p role="status" aria-live="polite" className="min-h-6 text-sm md:col-span-2">
+              {status === "sent" && <span className="text-accent">✓ ¡Gracias! Tu testimonio se envió y aparecerá aquí cuando sea aprobado.</span>}
+              {status === "error" && <span className="text-pop-yellow">No se pudo enviar. Inténtalo de nuevo en un momento.</span>}
+            </p>
+          </form>
+        </div>
       </div>
     </section>
   );
