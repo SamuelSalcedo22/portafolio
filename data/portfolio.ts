@@ -86,8 +86,6 @@ export const profile = {
   github: "https://github.com/SamuelSalcedo22",
   linkedin: "https://www.linkedin.com/in/samuel-andres-salcedo-martinez-0803742ba",
   whatsapp: "", // opcional, ej. "https://wa.me/57XXXXXXXXXX"
-  /** Opcional: endpoint de Formspree (https://formspree.io/f/xxxx). Si está vacío, el formulario abre tu app de correo. */
-  formEndpoint: "",
 };
 
 export const about = {
@@ -191,6 +189,16 @@ export const projects: Project[] = [
     year: "2026",
     logo: "/images/logos/marble-overdrive.svg",
     colors: [BLUE, CREAM, YELLOW],
+  },
+  {
+    title: "Postura Wear",
+    description:
+      "App para smartwatch (Wear OS) que acompaña tu postura mientras estudias o trabajas: usa acelerómetro y giroscopio para reconocer patrones y vibra cuando detecta una posible mala postura.",
+    tags: ["Kotlin", "Wear OS", "FastAPI", "Vertex AI", "Gemini"],
+    github: "https://github.com/SamuelSalcedo22/postura-wear",
+    year: "2026",
+    logo: "/images/logos/postura-wear.svg",
+    colors: [YELLOW, INK, ORANGE],
   },
 ];
 

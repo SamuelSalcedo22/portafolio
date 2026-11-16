@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" role="img" aria-label="Postura Wear">
+  <rect width="108" height="108" rx="24" fill="#0E141B"/>
+  <circle cx="54" cy="54" r="24" fill="none" stroke="#2C3644" stroke-width="4"/>
+  <path d="M30,54A24,24 0,0 1,71,37" fill="none" stroke="#3DE0AE" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="54" cy="54" r="10" fill="#3DE0AE"/>
+  <circle cx="50" cy="50" r="2.4" fill="#FFFFFF" fill-opacity=".35"/>
+</svg>

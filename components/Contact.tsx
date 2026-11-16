@@ -4,8 +4,9 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { profile } from "@/data/portfolio";
+import { sendMessage } from "@/lib/messages";
 
-type Status = "idle" | "sending" | "sent" | "mail" | "error";
+type Status = "idle" | "sending" | "sent" | "mail";
 
 export default function Contact() {
   const root = useRef<HTMLElement>(null);
@@ -44,29 +45,20 @@ export default function Contact() {
     const email = String(data.get("correo") ?? "");
     const message = String(data.get("mensaje") ?? "");
 
-    if (!profile.formEndpoint) {
-      // Sin servicio de formularios configurado: se abre la app de correo con el mensaje listo.
-      const subject = encodeURIComponent(`Portafolio — mensaje de ${name}`);
-      const body = encodeURIComponent(`${message}\n\n${name}\n${email}`);
-      window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
-      setStatus("mail");
+    if (data.get("sitio")) return; // trampa para bots
+
+    setStatus("sending");
+    const ok = await sendMessage({ name: name.trim(), email: email.trim(), message: message.trim() });
+    if (ok) {
+      setStatus("sent");
       form.reset();
       return;
     }
-
-    setStatus("sending");
-    try {
-      const res = await fetch(profile.formEndpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ nombre: name, correo: email, mensaje: message }),
-      });
-      if (!res.ok) throw new Error(String(res.status));
-      setStatus("sent");
-      form.reset();
-    } catch {
-      setStatus("error");
-    }
+    // Si no se pudo guardar, se abre la app de correo con el mensaje listo.
+    const subject = encodeURIComponent(`Portafolio — mensaje de ${name}`);
+    const body = encodeURIComponent(`${message}\n\n${name}\n${email}`);
+    window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
+    setStatus("mail");
   }
 
   const links = [
@@ -111,16 +103,17 @@ export default function Contact() {
           <form onSubmit={onSubmit} className="space-y-6" data-in>
             <div>
               <label htmlFor="nombre" className="meta text-cream/60">Nombre</label>
-              <input id="nombre" name="nombre" type="text" required minLength={2} autoComplete="name" placeholder="Tu nombre" className="field" />
+              <input id="nombre" name="nombre" type="text" required minLength={2} maxLength={80} autoComplete="name" placeholder="Tu nombre" className="field" />
             </div>
             <div>
               <label htmlFor="correo" className="meta text-cream/60">Correo</label>
-              <input id="correo" name="correo" type="email" required autoComplete="email" placeholder="tu@correo.com" className="field" />
+              <input id="correo" name="correo" type="email" required maxLength={120} autoComplete="email" placeholder="tu@correo.com" className="field" />
             </div>
             <div>
               <label htmlFor="mensaje" className="meta text-cream/60">Mensaje</label>
-              <textarea id="mensaje" name="mensaje" required minLength={10} rows={4} placeholder="Cuéntame tu idea…" className="field resize-none" />
+              <textarea id="mensaje" name="mensaje" required minLength={10} maxLength={2000} rows={4} placeholder="Cuéntame tu idea…" className="field resize-none" />
             </div>
+            <input type="text" name="sitio" tabIndex={-1} autoComplete="off" aria-hidden className="hidden" />
             <button
               type="submit"
               disabled={status === "sending"}
@@ -132,10 +125,7 @@ export default function Contact() {
             <p role="status" aria-live="polite" className="min-h-6 text-sm">
               {status === "sent" && <span className="text-accent">✓ ¡Mensaje enviado! Te responderé pronto.</span>}
               {status === "mail" && (
-                <span className="text-accent">✓ ¡Listo! Se abrió tu aplicación de correo con el mensaje preparado: solo falta enviarlo.</span>
-              )}
-              {status === "error" && (
-                <span className="text-pop-yellow">No se pudo enviar. Escríbeme directamente a {profile.email}.</span>
+                <span className="text-pop-yellow">No se pudo enviar desde aquí, así que se abrió tu aplicación de correo con el mensaje preparado: solo falta enviarlo.</span>
               )}
             </p>
           </form>

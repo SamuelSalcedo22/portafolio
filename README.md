@@ -20,7 +20,7 @@ Todo el contenido está en [`data/portfolio.ts`](data/portfolio.ts). Lo marcado 
 
 - **CV:** reemplaza `public/cv.pdf` por tu hoja de vida.
 - **Foto:** guarda tu foto en `public/images/` y pon la ruta en `profile.photo`.
-- **Formulario:** crea un formulario en [Formspree](https://formspree.io) y pega su URL en `profile.formEndpoint`. Si lo dejas vacío, el formulario abre la aplicación de correo del visitante.
+- **Mensajes y testimonios:** se guardan en Supabase. Ejecuta una vez los archivos de `supabase/` en el SQL Editor. Los mensajes se leen en Table Editor → `messages`; los testimonios se aprueban marcando `approved` en `testimonials`.
 
 ## Desarrollo
 

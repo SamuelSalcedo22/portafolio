@@ -66,7 +66,7 @@ export default function Projects() {
       </h2>
 
       <ul
-        className="mx-auto mt-12 grid max-w-[1600px] grid-cols-1 gap-x-6 gap-y-14 px-4 md:grid-cols-2 md:px-8 xl:grid-cols-3"
+        className="mx-auto mt-12 grid max-w-[1600px] grid-cols-1 gap-x-6 gap-y-14 px-4 md:grid-cols-2 md:px-8 2xl:grid-cols-4"
         style={{ perspective: "1400px" }}
       >
         {projects.map((p) => (
