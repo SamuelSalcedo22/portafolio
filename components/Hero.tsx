@@ -4,10 +4,12 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { profile } from "@/data/portfolio";
+import { useT } from "@/lib/i18n";
 import Poster from "./Poster";
 
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
+  const { ui, t } = useT();
 
   useEffect(() => {
     const el = root.current;
@@ -80,10 +82,10 @@ export default function Hero() {
       className="grid-lines relative flex min-h-[calc(100svh-4rem)] flex-col justify-between overflow-hidden px-4 pb-8 pt-6 md:px-8"
     >
       <div className="meta flex flex-wrap justify-between gap-x-8 gap-y-2 text-cream/60">
-        <span data-rise>Portafolio / 2026</span>
+        <span data-rise>{ui.hero.kicker}</span>
         <span data-rise className="hidden sm:block">{profile.location}</span>
         <span data-rise className="flex items-center gap-2">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-accent" /> Disponible para proyectos
+          <span className="h-2 w-2 animate-pulse rounded-full bg-accent" /> {ui.hero.available}
         </span>
       </div>
 
@@ -119,25 +121,25 @@ export default function Hero() {
       <div className="grid items-end gap-8 md:grid-cols-[1fr_auto]">
         <div className="max-w-xl">
           <p data-rise className="display text-3xl text-accent md:text-5xl">
-            {profile.role}
+            {t(profile.role)}
           </p>
           <p data-rise className="mt-4 text-sm leading-relaxed text-cream/75 md:text-base">
-            {profile.tagline}
+            {t(profile.tagline)}
           </p>
           <div data-rise className="mt-7 flex flex-wrap gap-3">
             <a
               href={profile.cv}
               download
-              className="meta group inline-flex items-center gap-3 bg-accent px-6 py-4 font-bold text-ink transition-transform hover:-translate-y-1"
+              className="meta group inline-flex items-center gap-3 bg-accent px-6 py-4 font-bold text-night transition-transform hover:-translate-y-1"
             >
-              Descargar CV
+              {ui.hero.downloadCv}
               <span className="transition-transform group-hover:translate-y-1">↓</span>
             </a>
             <a
               href="#proyectos"
               className="meta inline-flex items-center gap-3 border border-cream/40 px-6 py-4 text-cream transition-colors hover:border-cream hover:bg-cream hover:text-ink"
             >
-              Ver proyectos →
+              {ui.hero.seeProjects}
             </a>
           </div>
         </div>
@@ -146,12 +148,12 @@ export default function Hero() {
           <div data-avatar className="relative w-36 rotate-[5deg] border-4 border-cream bg-cream shadow-[10px_10px_0_#ff4321] md:w-52">
             {profile.photo ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={profile.photo} alt={`Foto de ${profile.firstName} ${profile.lastName}`} className="aspect-[4/5] w-full object-cover object-top" />
+              <img src={profile.photo} alt={`${ui.hero.photoOf} ${profile.firstName} ${profile.lastName}`} className="aspect-[4/5] w-full object-cover object-top" />
             ) : (
               <Poster kind="initials" label={profile.initials} colors={["#ff4321", "#0a0a0a", "#ffd23f"]} className="aspect-[4/5] w-full" />
             )}
             <p className="meta px-2 py-1.5 text-ink">
-              {profile.firstName} {profile.lastName} · {profile.role}
+              {profile.firstName} {profile.lastName} · {t(profile.role)}
             </p>
           </div>
         </div>

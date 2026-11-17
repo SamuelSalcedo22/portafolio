@@ -4,8 +4,10 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { academic, work, type ExperienceItem } from "@/data/portfolio";
+import { useT } from "@/lib/i18n";
 
 function Timeline({ title, items }: { title: string; items: ExperienceItem[] }) {
+  const { ui, t } = useT();
   return (
     <div data-timeline>
       <h3 className="display flex items-center gap-3 text-4xl text-cream md:text-5xl">
@@ -16,14 +18,14 @@ function Timeline({ title, items }: { title: string; items: ExperienceItem[] }) 
         <span aria-hidden data-line className="absolute bottom-0 left-[5px] top-2 w-0.5 origin-top bg-accent" />
         <ol className="space-y-10">
           {items.map((it) => (
-            <li key={it.title + it.place} data-item className="relative">
+            <li key={t(it.title)} data-item className="relative">
               <span aria-hidden data-dot className="absolute -left-8 top-1.5 h-3 w-3 rounded-full border-2 border-accent bg-ink" />
               <p className="meta text-accent">
-                {it.start} — {it.end}
+                {t(it.start)} — {t(it.end)}
               </p>
-              <h4 className="display mt-2 text-2xl leading-[1.08] text-cream md:text-3xl">{it.title}</h4>
-              <p className="meta mt-1 text-cream/60">{it.place}</p>
-              <p className="mt-3 max-w-prose text-sm leading-relaxed text-cream/75">{it.description}</p>
+              <h4 className="display mt-2 text-2xl leading-[1.08] text-cream md:text-3xl">{t(it.title)}</h4>
+              <p className="meta mt-1 text-cream/60">{t(it.place)}</p>
+              <p className="mt-3 max-w-prose text-sm leading-relaxed text-cream/75">{t(it.description)}</p>
               {it.link && (
                 <a
                   href={it.link}
@@ -31,7 +33,7 @@ function Timeline({ title, items }: { title: string; items: ExperienceItem[] }) 
                   rel="noopener noreferrer"
                   className="meta mt-3 inline-block border-b border-accent pb-0.5 text-cream hover:text-accent"
                 >
-                  Ver repositorio ↗
+                  {ui.experience.repo}
                 </a>
               )}
             </li>
@@ -44,6 +46,8 @@ function Timeline({ title, items }: { title: string; items: ExperienceItem[] }) 
 
 export default function Experience() {
   const root = useRef<HTMLElement>(null);
+  const { ui } = useT();
+  const [a, b, c] = ui.experience.title;
 
   useEffect(() => {
     const el = root.current;
@@ -86,13 +90,13 @@ export default function Experience() {
   return (
     <section id="experiencia" ref={root} className="relative overflow-hidden border-t border-cream/10 py-24 md:py-36">
       <div className="mx-auto max-w-[1600px] px-4 md:px-8">
-        <p className="meta text-accent">( 04 ) — Experiencia académica y laboral</p>
+        <p className="meta text-accent">{ui.experience.label}</p>
         <h2 data-xp-title className="display mt-3 whitespace-nowrap text-[clamp(3.5rem,13vw,13rem)] text-cream">
-          Tra<span className="pop-fill">yec</span>toria
+          {a}<span className="pop-fill">{b}</span>{c}
         </h2>
         <div className="mt-16 grid gap-16 lg:grid-cols-2 lg:gap-10">
-          <Timeline title="Académica" items={academic} />
-          <Timeline title="Laboral" items={work} />
+          <Timeline title={ui.experience.academic} items={academic} />
+          <Timeline title={ui.experience.work} items={work} />
         </div>
       </div>
     </section>

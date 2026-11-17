@@ -16,7 +16,9 @@ Portafolio personal hecho con **Next.js (App Router) + TypeScript + Tailwind CSS
 
 ## Cómo editar el contenido
 
-Todo el contenido está en [`data/portfolio.ts`](data/portfolio.ts). Lo marcado con `PENDIENTE` es texto de ejemplo.
+Todo el contenido está en [`data/portfolio.ts`](data/portfolio.ts), en español e inglés (`{ es: "…", en: "…" }`). Los textos fijos de la interfaz están en [`data/ui.ts`](data/ui.ts). Lo marcado con `PENDIENTE` es texto de ejemplo.
+
+El botón ES/EN del menú cambia el idioma y el botón del sol/luna cambia entre modo oscuro y claro; ambas elecciones se recuerdan en el navegador.
 
 - **CV:** reemplaza `public/cv.pdf` por tu hoja de vida.
 - **Foto:** guarda tu foto en `public/images/` y pon la ruta en `profile.photo`.

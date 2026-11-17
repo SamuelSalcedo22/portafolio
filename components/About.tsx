@@ -5,9 +5,11 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { about, interests } from "@/data/portfolio";
 import Poster from "./Poster";
+import { useT } from "@/lib/i18n";
 
 export default function About() {
   const root = useRef<HTMLElement>(null);
+  const { ui, t } = useT();
 
   useEffect(() => {
     const el = root.current;
@@ -84,20 +86,20 @@ export default function About() {
     return () => ctx.revert();
   }, []);
 
-  const words = about.paragraph.split(" ");
+  const words = t(about.paragraph).split(" ");
 
   return (
     <section id="sobre-mi" ref={root} className="relative overflow-hidden py-24 md:py-36">
       <div className="mx-auto grid max-w-[1600px] gap-12 px-4 md:px-8 lg:grid-cols-[minmax(0,18rem)_1fr]">
         <div>
-          <p className="meta text-accent">( 01 ) — Acerca de mí</p>
+          <p className="meta text-accent">{ui.about.label}</p>
           <div data-portrait className="mt-8 w-48 border-4 border-cream bg-cream md:w-64">
-            <Poster kind="code" colors={["#2f6bff", "#f6e6d4", "#ff4321"]} label="Ilustración: código" className="aspect-[4/5] w-full" />
+            <Poster kind="code" colors={["#2f6bff", "#f6e6d4", "#ff4321"]} label={ui.about.illustration} className="aspect-[4/5] w-full" />
           </div>
         </div>
 
         <div>
-          <h2 className="sr-only">Acerca de mí</h2>
+          <h2 className="sr-only">{ui.about.heading}</h2>
           <p data-para className="display text-[clamp(1.7rem,4.2vw,4rem)] leading-[1.02] text-cream">
             {words.map((w, i) => (
               <span key={i} data-word className="inline-block pr-[0.28em]">
@@ -108,22 +110,22 @@ export default function About() {
 
           <dl data-facts className="mt-14 grid gap-px bg-cream/15 sm:grid-cols-2 xl:grid-cols-[1fr_1fr_2fr]">
             {about.facts.map((f) => (
-              <div key={f.label} data-fact className="bg-ink p-5 last:sm:col-span-2 last:xl:col-span-1">
-                <dt className="meta text-accent">{f.label}</dt>
-                <dd className="mt-2 text-sm text-cream">{f.value}</dd>
+              <div key={t(f.label)} data-fact className="bg-ink p-5 last:sm:col-span-2 last:xl:col-span-1">
+                <dt className="meta text-accent">{t(f.label)}</dt>
+                <dd className="mt-2 text-sm text-cream">{t(f.value)}</dd>
               </div>
             ))}
           </dl>
 
           <div className="mt-12">
-            <h3 className="meta text-cream/60">Tecnologías que manejo</h3>
+            <h3 className="meta text-cream/60">{ui.about.tech}</h3>
             <ul data-skills className="mt-4 flex flex-wrap gap-2">
               {about.skills.map((s) => (
                 <li
                   key={s}
                   data-skill
                   data-hot
-                  className="meta border border-cream/30 px-4 py-2 text-cream transition-colors hover:border-accent hover:bg-accent hover:text-ink"
+                  className="meta border border-cream/30 px-4 py-2 text-cream transition-colors hover:border-accent hover:bg-accent hover:text-night"
                 >
                   {s}
                 </li>
@@ -134,13 +136,13 @@ export default function About() {
       </div>
 
       <div data-stage className="mt-24 md:mt-32" style={{ perspective: "1200px" }}>
-        <p className="meta mb-6 px-4 text-cream/60 md:px-8">Lo que me mueve →</p>
+        <p className="meta mb-6 px-4 text-cream/60 md:px-8">{ui.about.moves}</p>
         <ul data-track className="flex w-max gap-5 will-change-transform md:gap-8" style={{ transformStyle: "preserve-3d" }}>
           {interests.map((it, i) => (
             <li key={i} data-card className="w-[62vw] max-w-[22rem] shrink-0 sm:w-[38vw] lg:w-[24vw]">
-              <Poster kind={it.kind} colors={it.colors} label={it.title} className="aspect-[4/5] w-full" />
-              <p className="display mt-4 text-3xl text-cream">{it.title}</p>
-              <p className="mt-1 text-xs text-cream/60">{it.caption}</p>
+              <Poster kind={it.kind} colors={it.colors} label={t(it.title)} className="aspect-[4/5] w-full" />
+              <p className="display mt-4 text-3xl text-cream">{t(it.title)}</p>
+              <p className="mt-1 text-xs text-cream/60">{t(it.caption)}</p>
             </li>
           ))}
         </ul>

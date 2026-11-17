@@ -5,12 +5,16 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { profile } from "@/data/portfolio";
 import { sendMessage } from "@/lib/messages";
+import { useT } from "@/lib/i18n";
 
 type Status = "idle" | "sending" | "sent" | "mail";
 
 export default function Contact() {
   const root = useRef<HTMLElement>(null);
   const [status, setStatus] = useState<Status>("idle");
+  const { lang, ui } = useT();
+  const [plain, accent] = ui.contact.heading;
+  const heading = plain + accent;
 
   useEffect(() => {
     const el = root.current;
@@ -55,26 +59,26 @@ export default function Contact() {
       return;
     }
     // Si no se pudo guardar, se abre la app de correo con el mensaje listo.
-    const subject = encodeURIComponent(`Portafolio — mensaje de ${name}`);
+    const subject = encodeURIComponent(`${ui.contact.subject} ${name}`);
     const body = encodeURIComponent(`${message}\n\n${name}\n${email}`);
     window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
     setStatus("mail");
   }
 
   const links = [
-    { label: "Correo", value: profile.email, href: `mailto:${profile.email}` },
+    { label: ui.contact.email, value: profile.email, href: `mailto:${profile.email}` },
     { label: "GitHub", value: profile.github.replace("https://", ""), href: profile.github },
     { label: "LinkedIn", value: "in/samuel-andres-salcedo-martinez", href: profile.linkedin },
-    ...(profile.whatsapp ? [{ label: "WhatsApp", value: "Escríbeme", href: profile.whatsapp }] : []),
+    ...(profile.whatsapp ? [{ label: "WhatsApp", value: ui.contact.writeMe, href: profile.whatsapp }] : []),
   ];
 
   return (
     <section id="contacto" ref={root} className="relative overflow-hidden border-t border-cream/10 py-24 md:py-36">
       <div className="mx-auto max-w-[1600px] px-4 md:px-8">
-        <p className="meta text-accent">( 05 ) — Contactos</p>
-        <h2 data-heading className="display mt-3 overflow-hidden text-[clamp(4rem,19vw,19rem)] text-cream" aria-label="Hablemos">
-          {"Hablemos".split("").map((c, i) => (
-            <span key={i} data-char aria-hidden className={`inline-block ${i > 4 ? "text-accent" : ""}`}>
+        <p className="meta text-accent">{ui.contact.label}</p>
+        <h2 data-heading className={`display mt-3 overflow-hidden whitespace-nowrap text-cream ${lang === "en" ? "text-[clamp(3.5rem,16vw,16rem)]" : "text-[clamp(4rem,19vw,19rem)]"}`} aria-label={heading.replace("\u00a0", " ")}>
+          {heading.split("").map((c, i) => (
+            <span key={i} data-char aria-hidden className={`inline-block ${i >= plain.length ? "text-accent" : ""}`}>
               {c}
             </span>
           ))}
@@ -102,30 +106,30 @@ export default function Contact() {
 
           <form onSubmit={onSubmit} className="space-y-6" data-in>
             <div>
-              <label htmlFor="nombre" className="meta text-cream/60">Nombre</label>
-              <input id="nombre" name="nombre" type="text" required minLength={2} maxLength={80} autoComplete="name" placeholder="Tu nombre" className="field" />
+              <label htmlFor="nombre" className="meta text-cream/60">{ui.contact.name}</label>
+              <input id="nombre" name="nombre" type="text" required minLength={2} maxLength={80} autoComplete="name" placeholder={ui.contact.namePh} className="field" />
             </div>
             <div>
-              <label htmlFor="correo" className="meta text-cream/60">Correo</label>
-              <input id="correo" name="correo" type="email" required maxLength={120} autoComplete="email" placeholder="tu@correo.com" className="field" />
+              <label htmlFor="correo" className="meta text-cream/60">{ui.contact.email}</label>
+              <input id="correo" name="correo" type="email" required maxLength={120} autoComplete="email" placeholder={ui.contact.emailPh} className="field" />
             </div>
             <div>
-              <label htmlFor="mensaje" className="meta text-cream/60">Mensaje</label>
-              <textarea id="mensaje" name="mensaje" required minLength={10} maxLength={2000} rows={4} placeholder="Cuéntame tu idea…" className="field resize-none" />
+              <label htmlFor="mensaje" className="meta text-cream/60">{ui.contact.message}</label>
+              <textarea id="mensaje" name="mensaje" required minLength={10} maxLength={2000} rows={4} placeholder={ui.contact.messagePh} className="field resize-none" />
             </div>
             <input type="text" name="sitio" tabIndex={-1} autoComplete="off" aria-hidden className="hidden" />
             <button
               type="submit"
               disabled={status === "sending"}
-              className="meta group inline-flex items-center gap-3 bg-accent px-8 py-4 font-bold text-ink transition-transform hover:-translate-y-1 disabled:opacity-60"
+              className="meta group inline-flex items-center gap-3 bg-accent px-8 py-4 font-bold text-night transition-transform hover:-translate-y-1 disabled:opacity-60"
             >
-              {status === "sending" ? "Enviando…" : "Enviar mensaje"}
+              {status === "sending" ? ui.contact.sending : ui.contact.send}
               <span className="transition-transform group-hover:translate-x-1">→</span>
             </button>
             <p role="status" aria-live="polite" className="min-h-6 text-sm">
-              {status === "sent" && <span className="text-accent">✓ ¡Mensaje enviado! Te responderé pronto.</span>}
+              {status === "sent" && <span className="text-accent">{ui.contact.sent}</span>}
               {status === "mail" && (
-                <span className="text-pop-yellow">No se pudo enviar desde aquí, así que se abrió tu aplicación de correo con el mensaje preparado: solo falta enviarlo.</span>
+                <span className="text-accent">{ui.contact.mail}</span>
               )}
             </p>
           </form>

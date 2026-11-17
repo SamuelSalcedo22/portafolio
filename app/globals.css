@@ -1,9 +1,13 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-ink: #0a0a0a;
-  --color-coal: #151312;
-  --color-cream: #f6e6d4;
+  /* ink = fondo, cream = texto: se intercambian en modo claro */
+  --color-ink: var(--ink);
+  --color-coal: var(--coal);
+  --color-cream: var(--cream);
+  /* night y paper no cambian nunca (texto sobre naranja, pie de página) */
+  --color-night: #0a0a0a;
+  --color-paper: #f6e6d4;
   --color-accent: #ff4321;
   --color-pop-yellow: #ffd23f;
   --color-pop-blue: #2f6bff;
@@ -13,8 +17,21 @@
   --font-mono: var(--font-jetbrains), ui-monospace, monospace;
 }
 
+:root {
+  --ink: #0a0a0a;
+  --cream: #f6e6d4;
+  --coal: #151312;
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  --ink: #f6e6d4;
+  --cream: #0a0a0a;
+  --coal: #fffaf3;
+  color-scheme: light;
+}
+
 html {
-  background: #0a0a0a;
+  background: var(--ink);
 }
 html:not(.lenis) {
   scroll-behavior: smooth;
@@ -28,8 +45,8 @@ html.lenis body {
 }
 
 body {
-  background: #0a0a0a;
-  color: #f6e6d4;
+  background: var(--ink);
+  color: var(--cream);
   font-family: var(--font-jetbrains), ui-monospace, monospace;
   overflow-x: hidden;
 }
@@ -46,8 +63,8 @@ section[id] {
 /* Rejilla fina de fondo, como en la referencia */
 .grid-lines {
   background-image:
-    linear-gradient(to right, rgb(246 230 212 / 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(246 230 212 / 0.06) 1px, transparent 1px);
+    linear-gradient(to right, color-mix(in srgb, var(--cream) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--cream) 7%, transparent) 1px, transparent 1px);
   background-size: 25vw 50vh;
 }
 
@@ -60,6 +77,9 @@ section[id] {
   opacity: 0.07;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   animation: grain 0.9s steps(6) infinite;
+}
+:root[data-theme="light"] .grain {
+  opacity: 0.05;
 }
 @keyframes grain {
   0% { transform: translate(0, 0); }
@@ -91,7 +111,7 @@ section[id] {
 }
 
 .outline-text {
-  -webkit-text-stroke: 1.5px #f6e6d4;
+  -webkit-text-stroke: 1.5px var(--cream);
   color: transparent;
 }
 
@@ -129,8 +149,8 @@ section[id] {
 /* Ticket */
 .ticket {
   --notch: 10px;
-  background: #f6e6d4;
-  color: #0a0a0a;
+  background: var(--cream);
+  color: var(--ink);
   -webkit-mask:
     radial-gradient(circle var(--notch) at 0 50%, transparent 98%, #000) left / 51% 100% no-repeat,
     radial-gradient(circle var(--notch) at 100% 50%, transparent 98%, #000) right / 51% 100% no-repeat;
@@ -142,19 +162,28 @@ section[id] {
 .field {
   width: 100%;
   background: transparent;
-  border-bottom: 1px solid rgb(246 230 212 / 0.3);
+  border-bottom: 1px solid color-mix(in srgb, var(--cream) 30%, transparent);
   padding: 0.9rem 0;
-  color: #f6e6d4;
+  color: var(--cream);
   outline: none;
   transition: border-color 0.25s;
 }
-.field::placeholder { color: rgb(246 230 212 / 0.35); }
+.field::placeholder { color: color-mix(in srgb, var(--cream) 40%, transparent); }
 .field:focus { border-color: #ff4321; }
 
 :focus-visible {
   outline: 2px solid #ff4321;
   outline-offset: 3px;
 }
+
+/* Cambio de tema: el nuevo tema se revela en un círculo desde el botón */
+.theme-vt::view-transition-old(root),
+.theme-vt::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+.theme-vt::view-transition-old(root) { z-index: 1; }
+.theme-vt::view-transition-new(root) { z-index: 2; }
 
 @media (prefers-reduced-motion: reduce) {
   .grain, .pop-fill, .marquee, .wave-a, .wave-b { animation: none; }

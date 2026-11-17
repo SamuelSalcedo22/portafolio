@@ -3,6 +3,7 @@ import Contact from "@/components/Contact";
 import Experience from "@/components/Experience";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
+import LangMain from "@/components/LangMain";
 import Navbar from "@/components/Navbar";
 import Preloader from "@/components/Preloader";
 import Projects from "@/components/Projects";
@@ -14,7 +15,7 @@ import { about } from "@/data/portfolio";
 function Marquee() {
   const row = [...about.skills, ...about.skills];
   return (
-    <div aria-hidden className="-rotate-1 scale-[1.02] overflow-hidden border-y-2 border-ink bg-accent py-3 text-ink">
+    <div aria-hidden className="-rotate-1 scale-[1.02] overflow-hidden border-y-2 border-night bg-accent py-3 text-night">
       <div className="marquee">
         {row.map((t, i) => (
           <span key={i} className="display flex items-center gap-6 px-6 text-3xl md:text-5xl">
@@ -32,7 +33,7 @@ export default function Home() {
       <Preloader />
       <SmoothScroll />
       <Navbar />
-      <main>
+      <LangMain>
         <Hero />
         <Marquee />
         <About />
@@ -41,7 +42,7 @@ export default function Home() {
         <Experience />
         <Contact />
         <Skills />
-      </main>
+      </LangMain>
       <Footer />
     </>
   );

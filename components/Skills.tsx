@@ -3,10 +3,12 @@
 import { useEffect, useRef } from "react";
 import Matter from "matter-js";
 import { skills } from "@/data/portfolio";
+import { useT } from "@/lib/i18n";
 
 /** Sección adicional: habilidades y aptitudes que caen como entradas de concierto y se pueden arrastrar. */
 export default function Skills() {
   const root = useRef<HTMLElement>(null);
+  const { ui, t } = useT();
 
   useEffect(() => {
     const el = root.current;
@@ -109,35 +111,35 @@ export default function Skills() {
   return (
     <section id="habilidades" ref={root} className="group/c grid-lines relative overflow-hidden border-t border-cream/10 py-24 md:py-32">
       <div className="mx-auto max-w-[1600px] px-4 md:px-8">
-        <p className="meta text-accent">( 06 ) — Habilidades · Aptitudes</p>
+        <p className="meta text-accent">{ui.skills.label}</p>
       </div>
 
       <div data-arena className="relative mx-auto mt-6 min-h-[34rem] max-w-[1600px] px-4 group-data-[physics]/c:h-[88vh] md:px-8">
         <div className="pointer-events-none flex flex-col items-center py-10 text-center group-data-[physics]/c:absolute group-data-[physics]/c:inset-x-0 group-data-[physics]/c:top-0">
           <h2 className="display text-[clamp(3.2rem,12vw,11rem)] text-cream">
-            Habilidades
+            {ui.skills.title[0]}
             <br />
-            <span className="outline-text">y aptitudes</span>
+            <span className="outline-text">{ui.skills.title[1]}</span>
           </h2>
-          <p className="meta mt-6 hidden text-cream/50 md:group-data-[physics]/c:block">Arrastra las entradas</p>
+          <p className="meta mt-6 hidden text-cream/50 md:group-data-[physics]/c:block">{ui.skills.drag}</p>
         </div>
 
         <ul className="relative flex flex-wrap justify-center gap-3 group-data-[physics]/c:static group-data-[physics]/c:block">
           {skills.map((sk, i) => (
             <li
-              key={sk.name}
+              key={i}
               data-ticket
               data-hot
               className="ticket flex w-[12.5rem] cursor-grab select-none items-stretch will-change-transform active:cursor-grabbing group-data-[physics]/c:absolute group-data-[physics]/c:left-0 group-data-[physics]/c:top-0 md:w-[16rem]"
             >
               <div className="flex min-w-0 flex-1 flex-col justify-between py-2.5 pl-5 pr-2">
-                <p className={`meta ${sk.type === "Habilidad" ? "text-accent" : "text-pop-blue"}`}>{sk.type}</p>
-                <p className="display my-1.5 text-lg leading-none md:text-2xl">{sk.name}</p>
-                <p className="text-[0.62rem] leading-tight text-ink/60 md:text-[0.7rem]">{sk.detail}</p>
+                <p className={`meta ${sk.type === "skill" ? "text-accent" : "text-pop-blue"}`}>{sk.type === "skill" ? ui.skills.skill : ui.skills.aptitude}</p>
+                <p className="display my-1.5 text-lg leading-none md:text-2xl">{t(sk.name)}</p>
+                <p className="text-[0.62rem] leading-tight text-ink/60 md:text-[0.7rem]">{t(sk.detail)}</p>
               </div>
               <div
-                className={`flex w-12 flex-col items-center justify-center border-l-2 border-dashed border-ink/40 pr-2 text-ink md:w-14 ${
-                  sk.type === "Habilidad" ? "bg-accent" : "bg-pop-yellow"
+                className={`flex w-12 flex-col items-center justify-center border-l-2 border-dashed border-night/40 pr-2 text-night md:w-14 ${
+                  sk.type === "skill" ? "bg-accent" : "bg-pop-yellow"
                 }`}
               >
                 <span className="display text-2xl md:text-3xl">{String(i + 1).padStart(2, "0")}</span>

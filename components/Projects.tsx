@@ -5,9 +5,11 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { projects } from "@/data/portfolio";
 import Poster from "./Poster";
+import { useT } from "@/lib/i18n";
 
 export default function Projects() {
   const root = useRef<HTMLElement>(null);
+  const { ui, t } = useT();
 
   useEffect(() => {
     const el = root.current;
@@ -59,10 +61,10 @@ export default function Projects() {
   return (
     <section id="proyectos" ref={root} className="relative overflow-hidden bg-cream py-24 text-ink md:py-36">
       <div className="mx-auto max-w-[1600px] px-4 md:px-8">
-        <p className="meta text-accent">( 02 ) — Mis proyectos</p>
+        <p className="meta text-accent">{ui.projects.label}</p>
       </div>
       <h2 data-title className="display mt-4 whitespace-nowrap text-center text-[22vw] text-ink">
-        Proyectos
+        {ui.projects.title}
       </h2>
 
       <ul
@@ -73,11 +75,11 @@ export default function Projects() {
           <li key={p.title} data-project>
             <article data-tilt className="group flex h-full flex-col will-change-transform" style={{ transformStyle: "preserve-3d" }}>
               <div className="relative overflow-hidden border-2 border-ink">
-                <Poster kind="blank" colors={p.colors} label={`Portada de ${p.title}`} className="aspect-[4/3] w-full" />
+                <Poster kind="blank" colors={p.colors} label={`${ui.projects.cover} ${p.title}`} className="aspect-[4/3] w-full" />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={p.logo}
-                  alt={`Logo de ${p.title}`}
+                  alt={`${ui.projects.logo} ${p.title}`}
                   loading="lazy"
                   className="absolute left-1/2 top-1/2 h-[46%] w-auto -translate-x-1/2 -translate-y-1/2 rounded-[22%] shadow-[8px_8px_0_#0a0a0a] transition-transform duration-500 group-hover:-translate-y-[58%] group-hover:rotate-[-6deg] group-hover:scale-110"
                 />
@@ -85,12 +87,12 @@ export default function Projects() {
               </div>
 
               <h3 className="display mt-5 text-4xl leading-[1.02] md:text-5xl">{p.title}</h3>
-              <p className="mt-3 flex-1 text-sm leading-relaxed text-ink/75">{p.description}</p>
+              <p className="mt-3 flex-1 text-sm leading-relaxed text-ink/75">{t(p.description)}</p>
 
-              <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Tecnologías">
-                {p.tags.map((t) => (
-                  <li key={t} className="meta border border-ink/40 px-2.5 py-1">
-                    {t}
+              <ul className="mt-4 flex flex-wrap gap-1.5" aria-label={ui.projects.tech}>
+                {p.tags.map((tag) => (
+                  <li key={t(tag)} className="meta border border-ink/40 px-2.5 py-1">
+                    {t(tag)}
                   </li>
                 ))}
               </ul>
@@ -109,9 +111,9 @@ export default function Projects() {
                     href={p.demo}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="meta flex-1 border-2 border-accent bg-accent px-4 py-3 text-center font-bold transition-colors hover:border-ink hover:bg-ink hover:text-cream"
+                    className="meta flex-1 border-2 border-accent bg-accent px-4 py-3 text-center font-bold text-night transition-colors hover:border-ink hover:bg-ink hover:text-cream"
                   >
-                    {p.demoLabel ?? "Demo en vivo"} ↗
+                    {p.demoLabel ? t(p.demoLabel) : ui.projects.demo} ↗
                   </a>
                 )}
               </div>

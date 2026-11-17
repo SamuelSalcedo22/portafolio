@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { profile } from "@/data/portfolio";
+import { useT } from "@/lib/i18n";
 
 const COLS = 8;
 const ROWS = 5;
@@ -12,6 +13,7 @@ export default function Preloader() {
   const root = useRef<HTMLDivElement>(null);
   const count = useRef<HTMLSpanElement>(null);
   const [gone, setGone] = useState(false);
+  const { ui } = useT();
 
   useEffect(() => {
     const el = root.current;
@@ -61,7 +63,7 @@ export default function Preloader() {
       className="fixed inset-0 z-[100] flex items-center justify-center bg-ink"
       style={{ clipPath: "inset(0 0 0% 0)" }}
       role="status"
-      aria-label="Cargando portafolio"
+      aria-label={ui.preloader.aria}
     >
       <div className="grid-lines absolute inset-0" aria-hidden />
       <div data-mosaic className="relative aspect-[8/5] w-[min(70vw,34rem)] overflow-hidden bg-accent">
@@ -73,7 +75,7 @@ export default function Preloader() {
             backgroundSize: "12px 12px",
           }}
         />
-        <span className="display absolute inset-0 flex items-center justify-center text-[min(34vw,16rem)] text-ink">
+        <span className="display absolute inset-0 flex items-center justify-center text-[min(34vw,16rem)] text-night">
           {profile.initials}
         </span>
         <div
@@ -86,10 +88,10 @@ export default function Preloader() {
         </div>
       </div>
       <p className="meta absolute bottom-6 left-6 text-cream/50">
-        {profile.firstName} {profile.lastName} — Portafolio
+        {profile.firstName} {profile.lastName} — {ui.preloader.portfolio}
       </p>
       <p className="absolute bottom-5 right-6 flex items-end gap-2">
-        <span className="meta pb-1 text-cream/50">Cargando</span>
+        <span className="meta pb-1 text-cream/50">{ui.preloader.loading}</span>
         <span ref={count} className="display text-4xl text-cream">
           0
         </span>

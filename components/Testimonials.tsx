@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { testimonials as placeholders, type Testimonial } from "@/data/portfolio";
+import { useT } from "@/lib/i18n";
 import { fetchApproved, submitTestimonial } from "@/lib/testimonials";
 
 function initialsOf(name: string) {
@@ -15,7 +16,7 @@ function initialsOf(name: string) {
     .join("");
 }
 
-function Card({ t, i, total }: { t: Testimonial; i: number; total: number }) {
+function Card({ t, i, total, labels }: { t: Testimonial; i: number; total: number; labels: { stars: string; photoOf: string } }) {
   return (
     <figure className="flex h-full flex-col justify-between border-2 border-cream bg-coal p-6 md:p-10">
       <div className="flex items-start justify-between gap-4">
@@ -32,9 +33,9 @@ function Card({ t, i, total }: { t: Testimonial; i: number; total: number }) {
       <figcaption className="flex items-center gap-4">
         {t.photo ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={t.photo} alt={`Foto de ${t.name}`} className="h-14 w-14 rounded-full object-cover" />
+          <img src={t.photo} alt={`${labels.photoOf} ${t.name}`} className="h-14 w-14 rounded-full object-cover" />
         ) : (
-          <span aria-hidden className="display flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-accent text-2xl text-ink">
+          <span aria-hidden className="display flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-accent text-2xl text-night">
             {initialsOf(t.name)}
           </span>
         )}
@@ -42,7 +43,7 @@ function Card({ t, i, total }: { t: Testimonial; i: number; total: number }) {
           <span className="block text-sm font-bold text-cream">{t.name}</span>
           <span className="meta block text-cream/60">{t.role}</span>
         </span>
-        <span className="ml-auto text-accent" aria-label={`${t.stars} de 5 estrellas`}>
+        <span className="ml-auto text-accent" aria-label={`${t.stars} ${labels.stars}`}>
           {"★".repeat(t.stars)}
         </span>
       </figcaption>
@@ -53,6 +54,7 @@ function Card({ t, i, total }: { t: Testimonial; i: number; total: number }) {
 /** Pila 3D: cada testimonio sale volando hacia arriba y el siguiente avanza al frente. */
 export default function Testimonials() {
   const root = useRef<HTMLElement>(null);
+  const { ui, t: tr } = useT();
   const [remote, setRemote] = useState<Testimonial[]>([]);
   const [stars, setStars] = useState(5);
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
@@ -68,7 +70,8 @@ export default function Testimonials() {
   }, []);
 
   // Los reales van primero; los de ejemplo solo rellenan hasta llegar a tres.
-  const list = remote.length >= 3 ? remote : [...remote, ...placeholders.slice(0, 3 - remote.length)];
+  const seeds: Testimonial[] = placeholders.map((p) => ({ name: tr(p.name), role: tr(p.role), text: tr(p.text), photo: p.photo, stars: p.stars }));
+  const list = remote.length >= 3 ? remote : [...remote, ...seeds.slice(0, 3 - remote.length)];
   const count = list.length;
   // Cambia cuando cambia el contenido, para volver a armar la pila con las tarjetas nuevas.
   const signature = list.map((t) => `${t.name}:${t.text.length}`).join("|");
@@ -150,12 +153,12 @@ export default function Testimonials() {
       <div data-pin className="mx-auto max-w-[1600px] px-4 md:px-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="meta text-accent">( 03 ) — Testimonios</p>
+            <p className="meta text-accent">{ui.testimonials.label}</p>
             <h2 className="display mt-3 text-[clamp(3rem,9vw,8rem)] text-cream">
-              Lo que <span className="outline-text">dicen</span>
+              {ui.testimonials.title[0]} <span className="outline-text">{ui.testimonials.title[1]}</span>
             </h2>
           </div>
-          <p className="meta hidden text-cream/50 group-data-[stacked]/t:block">Sigue bajando ↓</p>
+          <p className="meta hidden text-cream/50 group-data-[stacked]/t:block">{ui.testimonials.keepScrolling}</p>
         </div>
 
         <ul
@@ -170,7 +173,7 @@ export default function Testimonials() {
               className="will-change-transform group-data-[stacked]/t:absolute group-data-[stacked]/t:inset-0"
               style={{ transformOrigin: "50% 100%" }}
             >
-              <Card t={t} i={i} total={count} />
+              <Card t={t} i={i} total={count} labels={ui.testimonials} />
             </li>
           ))}
         </ul>
@@ -178,36 +181,36 @@ export default function Testimonials() {
 
       <div className="relative mx-auto mt-20 max-w-4xl px-4 md:px-8">
         <div className="border-2 border-cream/25 bg-ink p-6 md:p-10">
-          <p className="meta text-accent">¿Trabajamos juntos?</p>
-          <h3 className="display mt-2 text-4xl text-cream md:text-6xl">Deja tu opinión</h3>
+          <p className="meta text-accent">{ui.testimonials.formKicker}</p>
+          <h3 className="display mt-2 text-4xl text-cream md:text-6xl">{ui.testimonials.formTitle}</h3>
           <p className="mt-3 max-w-prose text-sm text-cream/60">
-            Tu testimonio aparecerá en esta sección cuando Samuel lo apruebe.
+            {ui.testimonials.formNote}
           </p>
 
           <form onSubmit={onSubmit} className="mt-8 grid gap-6 md:grid-cols-2">
             <div>
-              <label htmlFor="t-nombre" className="meta text-cream/60">Nombre</label>
-              <input id="t-nombre" name="t-nombre" type="text" required minLength={2} maxLength={60} autoComplete="name" placeholder="Tu nombre" className="field" />
+              <label htmlFor="t-nombre" className="meta text-cream/60">{ui.testimonials.name}</label>
+              <input id="t-nombre" name="t-nombre" type="text" required minLength={2} maxLength={60} autoComplete="name" placeholder={ui.testimonials.namePh} className="field" />
             </div>
             <div>
-              <label htmlFor="t-cargo" className="meta text-cream/60">Cargo o relación</label>
-              <input id="t-cargo" name="t-cargo" type="text" required minLength={2} maxLength={80} placeholder="Cliente, profesor, compañero…" className="field" />
+              <label htmlFor="t-cargo" className="meta text-cream/60">{ui.testimonials.role}</label>
+              <input id="t-cargo" name="t-cargo" type="text" required minLength={2} maxLength={80} placeholder={ui.testimonials.rolePh} className="field" />
             </div>
             <div className="md:col-span-2">
-              <label htmlFor="t-opinion" className="meta text-cream/60">Tu opinión</label>
-              <textarea id="t-opinion" name="t-opinion" required minLength={10} maxLength={400} rows={3} placeholder="¿Cómo fue trabajar con Samuel?" className="field resize-none" />
+              <label htmlFor="t-opinion" className="meta text-cream/60">{ui.testimonials.opinion}</label>
+              <textarea id="t-opinion" name="t-opinion" required minLength={10} maxLength={400} rows={3} placeholder={ui.testimonials.opinionPh} className="field resize-none" />
             </div>
             <input type="text" name="sitio" tabIndex={-1} autoComplete="off" aria-hidden className="hidden" />
 
             <fieldset className="flex items-center gap-3">
-              <legend className="meta float-left mr-3 text-cream/60">Calificación</legend>
+              <legend className="meta float-left mr-3 text-cream/60">{ui.testimonials.rating}</legend>
               <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((n) => (
                   <button
                     key={n}
                     type="button"
                     onClick={() => setStars(n)}
-                    aria-label={`${n} de 5 estrellas`}
+                    aria-label={`${n} ${ui.testimonials.stars}`}
                     aria-pressed={stars === n}
                     className={`text-3xl leading-none transition-transform hover:scale-125 ${n <= stars ? "text-accent" : "text-cream/25"}`}
                   >
@@ -221,16 +224,16 @@ export default function Testimonials() {
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className="meta group inline-flex items-center gap-3 bg-accent px-8 py-4 font-bold text-ink transition-transform hover:-translate-y-1 disabled:opacity-60"
+                className="meta group inline-flex items-center gap-3 bg-accent px-8 py-4 font-bold text-night transition-transform hover:-translate-y-1 disabled:opacity-60"
               >
-                {status === "sending" ? "Enviando…" : "Enviar testimonio"}
+                {status === "sending" ? ui.testimonials.sending : ui.testimonials.send}
                 <span className="transition-transform group-hover:translate-x-1">→</span>
               </button>
             </div>
 
             <p role="status" aria-live="polite" className="min-h-6 text-sm md:col-span-2">
-              {status === "sent" && <span className="text-accent">✓ ¡Gracias! Tu testimonio se envió y aparecerá aquí cuando sea aprobado.</span>}
-              {status === "error" && <span className="text-pop-yellow">No se pudo enviar. Inténtalo de nuevo en un momento.</span>}
+              {status === "sent" && <span className="text-accent">{ui.testimonials.sent}</span>}
+              {status === "error" && <span className="text-accent">{ui.testimonials.error}</span>}
             </p>
           </form>
         </div>

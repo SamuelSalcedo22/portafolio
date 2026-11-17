@@ -4,6 +4,7 @@ import { useEffect, useRef, useSyncExternalStore } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { navLinks, profile } from "@/data/portfolio";
+import { useT } from "@/lib/i18n";
 
 const icons = {
   github:
@@ -15,6 +16,7 @@ const icons = {
 
 export default function Footer() {
   const root = useRef<HTMLElement>(null);
+  const { ui, t } = useT();
   const year = useSyncExternalStore(
     () => () => {},
     () => new Date().getFullYear(),
@@ -44,7 +46,7 @@ export default function Footer() {
   const socials = [
     { label: "GitHub", href: profile.github, d: icons.github },
     { label: "LinkedIn", href: profile.linkedin, d: icons.linkedin },
-    { label: "Correo", href: `mailto:${profile.email}`, d: icons.mail },
+    { label: ui.footer.email, href: `mailto:${profile.email}`, d: icons.mail },
   ];
 
   return (
@@ -58,22 +60,22 @@ export default function Footer() {
         </svg>
       </div>
 
-      <div className="bg-accent text-ink">
+      <div className="bg-accent text-night">
         <div className="mx-auto grid max-w-[1600px] gap-10 px-4 pb-6 pt-10 md:grid-cols-[1fr_auto_auto] md:px-8">
           <div>
-            <p className="display text-4xl md:text-5xl">¿Construimos algo?</p>
-            <a href="#contacto" className="meta mt-4 inline-block border-b-2 border-ink pb-1 font-bold">
-              Escríbeme →
+            <p className="display text-4xl md:text-5xl">{ui.footer.cta}</p>
+            <a href="#contacto" className="meta mt-4 inline-block border-b-2 border-night pb-1 font-bold">
+              {ui.footer.writeMe}
             </a>
           </div>
 
-          <nav aria-label="Enlaces rápidos">
-            <p className="meta mb-3 opacity-70">Secciones</p>
+          <nav aria-label={ui.footer.quickLinks}>
+            <p className="meta mb-3 opacity-70">{ui.footer.sections}</p>
             <ul className="grid grid-cols-2 gap-x-8 gap-y-1.5">
               {navLinks.map((l) => (
                 <li key={l.id}>
                   <a href={`#${l.id}`} className="meta font-bold hover:underline">
-                    {l.label}
+                    {t(l.label)}
                   </a>
                 </li>
               ))}
@@ -81,7 +83,7 @@ export default function Footer() {
           </nav>
 
           <div>
-            <p className="meta mb-3 opacity-70">Redes</p>
+            <p className="meta mb-3 opacity-70">{ui.footer.socials}</p>
             <ul className="flex gap-2">
               {socials.map((s) => (
                 <li key={s.label}>
@@ -90,7 +92,7 @@ export default function Footer() {
                     target={s.href.startsWith("http") ? "_blank" : undefined}
                     rel="noopener noreferrer"
                     aria-label={s.label}
-                    className="flex h-11 w-11 items-center justify-center border-2 border-ink transition-colors hover:bg-ink hover:text-accent"
+                    className="flex h-11 w-11 items-center justify-center border-2 border-night transition-colors hover:bg-night hover:text-accent"
                   >
                     <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden>
                       <path d={s.d} />
@@ -106,15 +108,15 @@ export default function Footer() {
           {profile.lastName}
         </p>
 
-        <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-4 border-t-2 border-ink px-4 py-5 md:px-8">
+        <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-4 border-t-2 border-night px-4 py-5 md:px-8">
           <p className="meta font-bold">
             © {year} {profile.firstName} {profile.lastName}
           </p>
           <a
             href="#inicio"
-            className="meta inline-flex items-center gap-2 bg-ink px-4 py-3 font-bold text-cream transition-transform hover:-translate-y-1"
+            className="meta inline-flex items-center gap-2 bg-night px-4 py-3 font-bold text-paper transition-transform hover:-translate-y-1"
           >
-            Volver arriba ↑
+            {ui.footer.top}
           </a>
         </div>
       </div>
