@@ -128,7 +128,7 @@ export default function Hero() {
           </p>
           <div data-rise className="mt-7 flex flex-wrap gap-3">
             <a
-              href={profile.cv}
+              href={t(profile.cv)}
               download
               className="meta group inline-flex items-center gap-3 bg-accent px-6 py-4 font-bold text-night transition-transform hover:-translate-y-1"
             >

@@ -8,6 +8,24 @@ import { setLang, setTheme, useTheme } from "@/lib/prefs";
 
 const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+/**
+ * Hace el cambio dentro de una transición animada. Si el navegador cancela la
+ * transición antes de aplicarlo, el cambio se aplica igual (sin animación).
+ */
+function withTransition(update: () => void) {
+  let applied = false;
+  const apply = () => {
+    if (applied) return;
+    applied = true;
+    update();
+  };
+  const vt = document.startViewTransition(apply);
+  vt.updateCallbackDone.catch(() => {}).finally(apply);
+  vt.ready.catch(apply);
+  vt.finished.catch(() => {}).finally(apply);
+  return vt;
+}
+
 function SunIcon() {
   return (
     <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -57,7 +75,7 @@ export default function Navbar() {
       setLang(next);
       return;
     }
-    document.startViewTransition(() => flushSync(() => setLang(next)));
+    withTransition(() => flushSync(() => setLang(next)));
   }
 
   /** El tema nuevo aparece en un círculo que crece desde el botón. */
@@ -73,7 +91,7 @@ export default function Navbar() {
     const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
     const root = document.documentElement;
     root.classList.add("theme-vt");
-    const vt = document.startViewTransition(() => setTheme(next));
+    const vt = withTransition(() => setTheme(next));
     vt.ready
       .then(() =>
         root.animate(
@@ -82,7 +100,7 @@ export default function Navbar() {
         ),
       )
       .catch(() => {});
-    vt.finished.finally(() => root.classList.remove("theme-vt"));
+    vt.finished.catch(() => {}).finally(() => root.classList.remove("theme-vt"));
   }
 
   const iconBtn =
@@ -143,7 +161,7 @@ export default function Navbar() {
             {theme === "dark" ? <SunIcon /> : <MoonIcon />}
           </button>
           <a
-            href={profile.cv}
+            href={t(profile.cv)}
             download
             className="meta hidden h-10 items-center border border-cream/40 px-4 text-cream transition-colors hover:border-accent hover:bg-accent hover:text-night sm:flex"
           >
@@ -185,7 +203,7 @@ export default function Navbar() {
           ))}
           <li className="pt-6 sm:hidden">
             <a
-              href={profile.cv}
+              href={t(profile.cv)}
               download
               className="meta inline-flex items-center gap-3 bg-accent px-6 py-4 font-bold text-night"
             >

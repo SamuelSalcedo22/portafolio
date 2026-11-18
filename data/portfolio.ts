@@ -99,7 +99,8 @@ export const profile = {
   } as Text,
   location: "Pasto, Nariño · Colombia",
   university: "Universidad Cooperativa de Colombia",
-  cv: "/Hoja-de-vida-Samuel-Salcedo.pdf", // Para cambiarla, reemplaza ese archivo en public/
+  // Hoja de vida que se descarga según el idioma. Para cambiarla, reemplaza el archivo en public/.
+  cv: { es: "/Hoja-de-vida-Samuel-Salcedo.pdf", en: "/CV-Samuel-Salcedo-EN.pdf" } as Text,
   photo: "/images/avatar.jpg" as string | undefined,
   email: "samuelandressalcedomartinez@gmail.com",
   github: "https://github.com/SamuelSalcedo22",

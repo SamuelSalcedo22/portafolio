@@ -20,7 +20,7 @@ Todo el contenido está en [`data/portfolio.ts`](data/portfolio.ts), en español
 
 El botón ES/EN del menú cambia el idioma y el botón del sol/luna cambia entre modo oscuro y claro; ambas elecciones se recuerdan en el navegador.
 
-- **CV:** está en `public/Hoja-de-vida-Samuel-Salcedo.pdf`; reemplaza ese archivo para actualizarla.
+- **CV:** en español `public/Hoja-de-vida-Samuel-Salcedo.pdf` y en inglés `public/CV-Samuel-Salcedo-EN.pdf`; el botón entrega la del idioma activo. La versión en inglés se genera desde `cv/cv-en.html` (el comando está al inicio de ese archivo).
 - **Foto:** guarda tu foto en `public/images/` y pon la ruta en `profile.photo`.
 - **Mensajes y testimonios:** se guardan en Supabase. Ejecuta una vez los archivos de `supabase/` en el SQL Editor. Los mensajes se leen en Table Editor → `messages`; los testimonios se aprueban marcando `approved` en `testimonials`.
 
